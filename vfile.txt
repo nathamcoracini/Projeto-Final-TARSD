@@ -1,0 +1,4 @@
+     master.vm.provision "shell", path: "D:/HashiCorp/Vagrant/bin/Kubernetes/dockerfile.sh"
+
+
+       node.vm.provision "shell", path: "D:/HashiCorp/Vagrant/bin/Kubernetes/dockerfile.sh"
