@@ -1,4 +1,4 @@
-IMAGE_NAME = "leandrocalmeida/ubuntu"
+IMAGE_NAME = "docker.io/library/ubuntu:latest"
 N = 2
 
 
@@ -13,9 +13,9 @@ Vagrant.configure("2") do |config|
       config.vm.box_version = "02"
       master.vm.network "private_network", ip: "192.168.50.10"
       master.vm.hostname = "k8s-master"
- 
+
       master.vm.provision "ansible" do |ansible|
-        ansible.compatibility_mode= "1.8" 
+        ansible.compatibility_mode= "1.8"
 	ansible.playbook = "D:/HashiCorp/Vagrant/bin/Kubernetes/master-playbook.yml"
          ansible.extra_vars = {
             node_ip: "192.168.50.10",
