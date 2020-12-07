@@ -1,4 +1,4 @@
-IMAGE_NAME = "ubuntu/trusty64"
+IMAGE_NAME = "ubuntu/xenial64"
 N = 2
 
 
