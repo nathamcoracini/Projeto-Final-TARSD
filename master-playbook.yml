@@ -1,67 +1,67 @@
 ---
-   - hosts: all
-   tasks:
-   - name: Remove swapfile from /etc/fstab
-   mount:
-     name: "{{ item }}"
-     fstype: swap
-     state: absent
-   with_items:
-     - swap
-     - none
-   become: yes
+- hosts: all
+  tasks:
+  - name: Remove swapfile from /etc/fstab
+    mount:
+      name: "{{ item }}"
+      fstype: swap
+      state: absent
+    with_items:
+      - swap
+      - none
+    become: yes
 
   - name: Disable swap
-  command: swapoff -a
-  when: ansible_swaptotal_mb > 0
-  become: yes
+    command: swapoff -a
+    when: ansible_swaptotal_mb > 0
+    become: yes
 
   - name: Add an apt signing key for Kubernetes
-  apt_key:
-    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-    state: present
-  become: yes
+    apt_key:
+      url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+      state: present
+    become: yes
 
   - name: Adding apt repository for Kubernetes
-  apt_repository:
-    repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
-    state: present
-    filename: kubernetes.list
-  become: yes
+    apt_repository:
+      repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+      state: present
+      filename: kubernetes.list
+    become: yes
 
   - name: Atualiza a lista de repositorios e instala os pacotes do K8s
-  apt: name={{ item }} update_cache=yes
-  loop: ['kubelet', 'kubeadm', 'kubectl']
-  become: yes
+    apt: name={{ item }} update_cache=yes
+    loop: ['kubelet', 'kubeadm', 'kubectl']
+    become: yes
 
   - name: Inicia o cluster Kubernetes
-  command: kubeadm init --apiserver-advertise-address 192.168.50.10
-  become: yes
+    command: kubeadm init --apiserver-advertise-address 192.168.50.10
+    become: yes
 
   - name: Cria a estrutura de diret´orios para o funcionamento do Kubernetes
-  file:
-    path: /home/vagrant/.kube
-    state: directory
+    file:
+      path: /home/vagrant/.kube
+      state: directory
 
   - name: Copia as configura¸c~oes do kubernetes para o diret´orio do usu´ario vagrant
-  command: cp -i /etc/kubernetes/admin.conf /home/vagrant/.kube/config
-  become: yes
+    command: cp -i /etc/kubernetes/admin.conf /home/vagrant/.kube/config
+    become: yes
 
   - name: Ajusta as permissoes no arquivo de configuracao do Kubernetes
-  file:
-    path: /home/vagrant/.kube/config
-    owner: vagrant
-    group: vagrant
-    state: file
-  become: yes
+    file:
+      path: /home/vagrant/.kube/config
+      owner: vagrant
+      group: vagrant
+      state: file
+    become: yes
 
   - name: Instala o plugin Weave para gerenciar a rede de overlay no Kubernetes
-  command: kubectl apply -f /vagrant/kubernetes-setup/net.yaml
+    command: kubectl apply -f /vagrant/kubernetes-setup/net.yaml
 
   - name: Salva o token para entrada de novos nos no cluster
-  command: kubeadm token create --print-join-command
-  register: join_command
+    command: kubeadm token create --print-join-command
+    register: join_command
 
   - name: Copia o token para entrada de novos nos no cluster em um arquivo
-  become: false
-  local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./join-command.sh"
+    become: false
+    local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./join-command.sh"
