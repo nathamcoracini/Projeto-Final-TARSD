@@ -6,8 +6,12 @@
   - name: Update apt-get repo and cache
     apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
 
-  - name: Upgrade all apt packages
-    apt: upgrade=dist force_apt_get=yes
+  # - name: Upgrade all apt packages
+  #   apt: upgrade=dist force_apt_get=yes
+
+  # - name: Install required system packages
+  #   apt: name={{ item }} state=latest update_cache=yes
+  #   loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'python3-setuptools']
 
   - name: Install packages that allow apt to be used over HTTPS
     apt:
@@ -21,8 +25,6 @@
       - curl
       - gnupg-agent
       - software-properties-common
-      - build-essential
-      - libssl-dev
 
   - name: Add an apt signing key for Docker
     apt_key:
@@ -31,7 +33,7 @@
 
   - name: Add apt repository for stable version
     apt_repository:
-      repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable
+      repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
       state: present
 
   - name: Install docker and its dependecies
@@ -44,8 +46,11 @@
       - docker-ce
       - docker-ce-cli
       - containerd.io
-    notify:
-      - docker status
+
+  - name: Reinicia ssh para funcionamento do docker
+    service:
+      name: ssh
+      state: restarted
 
   - name: Add vagrant user to docker group
     user:
@@ -89,6 +94,12 @@
     command: kubeadm init --apiserver-advertise-address 192.168.50.10
     become: yes
 
+  - name: Restart kubelet
+    service:
+      name: kubelet
+      daemon_reload: yes
+      state: restarted
+
   - name: Cria a estrutura de diret´orios para o funcionamento do Kubernetes
     file:
       path: /home/vagrant/.kube
@@ -106,8 +117,17 @@
       state: file
     become: yes
 
+  - name: Acertar local da configuracao
+    shell: export KUBECONFIG=$HOME/.kube/conf
+
+  - name: Stop and Start ssh
+    service:
+      name: ssh
+      state: restarted
+
   - name: Instala o plugin Weave para gerenciar a rede de overlay no Kubernetes
-    command: kubectl apply -f /vagrant/kubernetes-setup/net.yaml
+    become: false
+    command: kubectl apply -f /vagrant/net.yaml
 
   - name: Salva o token para entrada de novos nos no cluster
     command: kubeadm token create --print-join-command
