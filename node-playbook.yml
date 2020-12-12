@@ -1,12 +1,10 @@
 ---
 - hosts: all
+  become: true
   tasks:
 
   - name: Update apt-get repo and cache
     apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
-
-  # - name: Upgrade all apt packages
-  #   apt: upgrade=dist force_apt_get=yes
 
   - name: Install packages that allow apt to be used over HTTPS
     apt:
@@ -23,7 +21,7 @@
 
   - name: Add an apt signing key for Docker
     apt_key:
-      url: https://download.docker.com/linux/ubuntu/gpg validate_certs=False
+      url: https://download.docker.com/linux/ubuntu/gpg
       state: present
 
   - name: Add apt repository for stable version
@@ -82,6 +80,22 @@
     loop: ['kubelet', 'kubeadm', 'kubectl']
     become: yes
 
+  - name: Configure node ip
+    lineinfile:
+      create: yes
+      path: /etc/default/kubelet
+      line: KUBELET_EXTRA_ARGS=--node-ip={{ node_ip }}
+
+  - name: Restart kubelet
+    service:
+      name: kubelet
+      daemon_reload: yes
+      state: restarted
+
   - name: Acessa o cluster utilizando o token gerado pelo master
-    command: sh /vagrant/kubernetes-setup/join-command.sh
+    command: sh /vagrant/join-command.sh
     become: yes
+
+  handlers:
+    - name: docker status
+      service: name=docker state=started

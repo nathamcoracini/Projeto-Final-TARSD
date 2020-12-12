@@ -8,6 +8,8 @@ Vagrant.configure("2") do |config|
       v.cpus = 2
 
     end
+    # config.vm.synced_folder "videos/"
+
     config.vm.define "k8s-master" do |master|
       master.vm.box = IMAGE_NAME
       master.vm.network "private_network", ip: "192.168.50.10"
@@ -19,6 +21,8 @@ Vagrant.configure("2") do |config|
             node_ip: "192.168.50.10",
          }
       end
+
+      # master.vm.provision "shell", path: "script.sh"
     end
 
 (1..N).each do |i|
