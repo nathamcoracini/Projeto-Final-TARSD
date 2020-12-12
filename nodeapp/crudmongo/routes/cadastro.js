@@ -1,14 +1,16 @@
 var express = require('express');
 var router = express.Router();
 
-router.put('/:nome/:idade', function(req, res) {
-  var nome = req.params.nome;
-  var idade = parseInt(req.params.idade);
-  console.log(nome);
-  console.log(idade);
-  global.db.insert({nome, idade}, (err, result) => {
+router.put('/:tag/:temp/:umidade/:clorofila/:reflectancia', function(req, res) {
+  var tag = req.params.tag;
+  var temp = parseFloat(req.params.temp);
+  var umidade = parseFloat(req.params.umidade);
+  var clorofila = parseInt(req.params.clorofila);
+  var reflectancia = parseFloat(req.params.reflectancia);
+
+  global.db.insertOne({tag, temp, umidade, clorofila, reflectancia}, (err, result) => {
           if(err) { return console.log(err); }
-          res.redirect('/');
+          res.redirect('/plantacao');
       })
 })
 

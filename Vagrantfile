@@ -1,4 +1,4 @@
-IMAGE_NAME = "ubuntu/bionic64"
+IMAGE_NAME = "ubuntu/xenial64"
 N = 2
 
 
@@ -8,7 +8,6 @@ Vagrant.configure("2") do |config|
       v.cpus = 2
 
     end
-    # config.vm.synced_folder "videos/"
 
     config.vm.define "k8s-master" do |master|
       master.vm.box = IMAGE_NAME
@@ -22,7 +21,8 @@ Vagrant.configure("2") do |config|
          }
       end
 
-      # master.vm.provision "shell", path: "script.sh"
+      master.vm.provision "shell", path: "install-nginx.sh"
+      master.vm.provision "shell", path: "install-mongo.sh"
     end
 
 (1..N).each do |i|

@@ -4,11 +4,11 @@ mongoClient.connect("mongodb://localhost", { useUnifiedTopology: true })
             .catch(err => console.log(err))
 
 function findAll(callback){
-    global.conn.collection("customers").find({}).toArray(callback);
+    global.conn.collection("plantacao").find({}).toArray(callback);
 }
 
-function insert(customer, callback){
-    global.conn.collection("customers").insert(customer, callback);
+function insertOne(customer, callback){
+    global.conn.collection("plantacao").insertOne(customer, callback);
 }
 
-module.exports = { findAll, insert }
+module.exports = { findAll, insertOne }
