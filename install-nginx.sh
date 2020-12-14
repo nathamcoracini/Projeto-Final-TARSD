@@ -1,4 +1,4 @@
-sudo apt install -y libpcre3-dev libssl-dev zlib1g-dev
+sudo apt install -y libpcre3-dev libssl-dev zlib1g-dev build-essential
 
 mkdir buildnginx
 cd buildnginx

@@ -12,6 +12,7 @@ Vagrant.configure("2") do |config|
     config.vm.define "k8s-master" do |master|
       master.vm.box = IMAGE_NAME
       master.vm.network "private_network", ip: "192.168.50.10"
+      master.vm.network "forwarded_port", guest: 80, host: 8080
       master.vm.hostname = "k8s-master"
 
       master.vm.provision "ansible" do |ansible|
@@ -23,6 +24,7 @@ Vagrant.configure("2") do |config|
 
       master.vm.provision "shell", path: "install-nginx.sh"
       master.vm.provision "shell", path: "install-mongo.sh"
+      master.vm.provision "shell", path: "shell.sh"
     end
 
 (1..N).each do |i|

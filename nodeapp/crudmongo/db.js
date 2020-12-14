@@ -1,5 +1,5 @@
 const mongoClient = require("mongodb").MongoClient;
-mongoClient.connect("mongodb://localhost", { useUnifiedTopology: true })
+mongoClient.connect("mongodb://192.168.50.10", { useUnifiedTopology: true })
             .then(conn => global.conn = conn.db("finaltarsd"))
             .catch(err => console.log(err))
 
