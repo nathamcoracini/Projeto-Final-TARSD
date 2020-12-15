@@ -103,7 +103,7 @@
       state: restarted
 
   - name: Inicia o cluster Kubernetes
-    command: kubeadm init --apiserver-advertise-address 192.168.50.10
+    command: kubeadm init --apiserver-advertise-address 192.168.50.10 --apiserver-cert-extra-sans="192.168.50.10"  --node-name k8s-master --pod-network-cidr=192.168.0.0/16
     become: yes
 
   - name: Cria a estrutura de diret´orios para o funcionamento do Kubernetes
@@ -125,10 +125,6 @@
 
   - name: Acertar local da configuracao
     shell: export KUBECONFIG=$HOME/.kube/conf
-
-  # - name: Instala o plugin Weave para gerenciar a rede de overlay no Kubernetes
-  #   become: false
-  #   command: kubectl apply -f /vagrant/net.yaml
 
   - name: Install calico pod network
     become: false

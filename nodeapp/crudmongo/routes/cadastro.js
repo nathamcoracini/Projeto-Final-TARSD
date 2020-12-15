@@ -10,7 +10,6 @@ router.put('/:tag/:temp/:umidade/:clorofila/:reflectancia', function(req, res) {
 
   global.db.insertOne({tag, temp, umidade, clorofila, reflectancia}, (err, result) => {
           if(err) { return console.log(err); }
-          res.redirect('/plantacao');
       })
 })
 

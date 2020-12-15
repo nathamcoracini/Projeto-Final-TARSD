@@ -21,10 +21,9 @@ Vagrant.configure("2") do |config|
             node_ip: "192.168.50.10",
          }
       end
-
-      master.vm.provision "shell", path: "install-nginx.sh"
-      master.vm.provision "shell", path: "install-mongo.sh"
-      master.vm.provision "shell", path: "shell.sh"
+      master.vm.provision "shell", path: "nginx-install.sh"
+      master.vm.provision "shell", path: "mongo-install.sh"
+      master.vm.provision "shell", path: "setup.sh"
     end
 
 (1..N).each do |i|

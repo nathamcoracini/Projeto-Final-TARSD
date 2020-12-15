@@ -11,4 +11,4 @@ function insertOne(customer, callback){
     global.conn.collection("plantacao").insertOne(customer, callback);
 }
 
-module.exports = { findAll, insertOne }
+module.exports = { findAll, insertOne };
